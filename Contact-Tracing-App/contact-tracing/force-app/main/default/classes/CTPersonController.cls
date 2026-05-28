@@ -1,4 +1,4 @@
-
+@SuppressWarnings('PMD')
 public class CTPersonController { //NOPMD
 
     /**
@@ -48,4 +48,25 @@ public class CTPersonController { //NOPMD
             return null;
         }
     }
+
+    /**
+     * Challenge 7
+     * Method that returns the count of people with each health status.
+     * @return Map<String, Integer>
+     */
+
+     public static Map<String, Integer> getHealtsStatusCount(){
+        Map<String, Integer> healthCountMap = new Map<String, Integer>();
+
+        for (AggregateResult ar :  [SELECT Health_Status__c, COUNT(Id) total 
+                                    FROM Person__c 
+                                    GROUP BY Health_Status__c]){ 
+            String healthStatus = String.valueOf(ar.get('Health_Status__c'));
+            Integer peopleCount = Integer.valueOf(ar.get('total'));
+
+            healthCountMap.put(healthStatus, peopleCount);
+        }
+
+        return healthCountMap;
+     }
 }

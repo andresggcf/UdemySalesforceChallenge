@@ -1,3 +1,4 @@
+@SuppressWarnings('PMD')
 public with sharing class CTLocationController {
     /**
      * @return List<Location__c>
@@ -32,5 +33,22 @@ public with sharing class CTLocationController {
         }else {
             return null;
         }
+    }
+
+    /**
+     * Challenge 8
+     * Query location to find the number of locations in each health status.
+     * @return Map<String, Integer> map with the status and count of locations with that status.
+     */
+    public static Map<String, Integer> getStatusCount(){
+        Map<String, Integer> statusCountMap = new Map <String, Integer>();
+
+        for (AggregateResult ar :  [SELECT Status__c, COUNT(Id) total 
+                                    FROM Location__c
+                                    GROUP BY Status__c]){
+            statusCountMap.put(String.valueOf(ar.get('Status__c')), Integer.valueOf(ar.get('total')));
+        }
+
+        return statusCountMap;
     }
 }
