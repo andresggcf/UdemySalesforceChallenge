@@ -1,4 +1,4 @@
-trigger ContactTrigger on Contact (after insert, after update) {
+trigger ContactTrigger on Contact (after insert, after update, after delete, after undelete) {
 
     ContactTriggerHandler handler = new ContactTriggerHandler(Trigger.new, Trigger.oldMap);
 
@@ -8,6 +8,12 @@ trigger ContactTrigger on Contact (after insert, after update) {
         }
         if(Trigger.isUpdate){
             handler.afterUpdate();
+        }
+        if(Trigger.isDelete){
+            handler.afterDelete();
+        }
+        if(Trigger.isUndelete){
+            handler.afterUndelete();
         }
     }
 
