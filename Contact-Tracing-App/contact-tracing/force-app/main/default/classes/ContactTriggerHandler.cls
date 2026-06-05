@@ -74,7 +74,6 @@ public with sharing class ContactTriggerHandler {
         set<Id> accountIds = new Set<Id>();
         for (Contact cont : newList) {
             if(String.isNotBlank(cont.AccountId)){
-                //write automation logic here
                 accountIds.add(cont.AccountId);
             }
         }
