@@ -69,4 +69,43 @@ public class CTPersonController { //NOPMD
 
         return healthCountMap;
      }
+
+     public static Set<Id> getCohabitants(Set<Id> personIds){
+        Set<Id> cohabitantIds = new Set<Id>();
+        List<String> healthStatuses = new List<String>{'Red', 'Orange'};
+
+        for (People_Tracing__c pt : [SELECT Id, Person_1__c, Person_2__c 
+        FROM People_Tracing__c 
+        WHERE (Person_1__c IN :personIds OR Person_2__c IN :personIds) 
+        AND Contact_Type__c = 'Cohabitant'
+        AND (Person_1__r.Health_Status__c NOT IN :healthStatuses OR Person_2__r.Health_Status__c NOT IN :healthStatuses)]) //NOPMD
+        {
+            if(personIds.contains(pt.Person_1__c)){
+                cohabitantIds.add(pt.Person_2__c);
+            } else {
+                cohabitantIds.add(pt.Person_1__c);
+            }
+        }
+
+        return cohabitantIds;
+     }
+
+    public static Set<Id> getNeighbors(Set<Id> personIds){
+        Set<Id> neighborIds = new Set<Id>();
+
+        for (People_Tracing__c pt : [SELECT Id, Person_1__c, Person_2__c 
+        FROM People_Tracing__c 
+        WHERE (Person_1__c IN :personIds OR Person_2__c IN :personIds) 
+        AND Contact_Type__c = 'Neighbor'
+        AND (Person_1__r.Health_Status__c = 'Green' OR Person_2__r.Health_Status__c = 'Green')]) //NOPMD
+        {
+            if(personIds.contains(pt.Person_1__c)){
+                neighborIds.add(pt.Person_2__c);
+            } else {
+                neighborIds.add(pt.Person_1__c);
+            }
+        }
+
+        return neighborIds;
+     }
 }
